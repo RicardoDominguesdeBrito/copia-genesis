@@ -411,6 +411,10 @@
         <span class="pt">↑ R$ 50 amanhã, para sempre</span>
         <span class="en" style="display:none">↑ R$ 50 tomorrow, forever</span>
       </p>
+      <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:#6b5e4e;margin-top:14px;">
+        ≈ <span id="preco-usd">—</span> USD
+      </p>
+
       <div class="online-counter" style="margin-top:20px;display:flex;align-items:center;justify-content:center;gap:10px;">
         <div style="width:7px;height:7px;border-radius:50%;background:#27ae60;animation:pulse 1.6s ease-in-out infinite;flex-shrink:0;"></div>
         <span id="online-num" style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:300;color:#e8e0d4;line-height:1;"></span>
@@ -580,7 +584,32 @@
     const precoAtual = PRECO_BASE + dias * INCREMENTO;
     const precoFmt   = "R$ " + precoAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
-    document.getElementById('preco').innerText       = precoFmt;
+    document.getElementById('preco').innerText = precoFmt;
+
+    // ═══════════════════════════════════
+    // COTAÇÃO USD EM TEMPO REAL
+    // ═══════════════════════════════════
+    (function() {
+      const elUSD = document.getElementById('preco-usd');
+
+      // Tenta buscar cotação real via API gratuita (sem chave)
+      fetch('https://api.frankfurter.app/latest?from=USD&to=BRL')
+        .then(r => r.json())
+        .then(data => {
+          const cotacao = data.rates && data.rates.BRL ? data.rates.BRL : 5.31;
+          const valor   = (precoAtual / cotacao).toLocaleString('en-US', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+          });
+          if (elUSD) elUSD.innerText = '$ ' + valor + ' USD';
+        })
+        .catch(() => {
+          // Fallback: usa cotação do dia anterior se API falhar
+          const valor = (precoAtual / 5.31).toLocaleString('en-US', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+          });
+          if (elUSD) elUSD.innerText = '$ ' + valor + ' USD*';
+        });
+    })();
     document.getElementById('modal-preco').innerText = precoFmt;
     document.getElementById('pix-display').innerText = PIX_KEY;
     document.getElementById('pix-display2').innerText = PIX_KEY;
