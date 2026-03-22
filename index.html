@@ -7,71 +7,187 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&amp;family=Cinzel:wght@400;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;family=JetBrains+Mono:wght@300;400&amp;family=Newsreader:ital,wght@0,300;0,400;1,300&amp;family=Noto+Serif:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "on-primary": "#412d00",
-              "primary": "#c4913e",
-              "inverse-on-surface": "#32302e",
-              "tertiary": "#cbc6bd",
-              "surface-container-high": "#2c2a27",
-              "surface-tint": "#eac174",
-              "outline": "#9a8f7f",
-              "surface-variant": "#373432",
-              "on-primary-fixed": "#271900",
-              "primary-fixed": "#ffdea6",
-              "on-primary-container": "#493300",
-              "on-secondary-fixed-variant": "#8e130c",
-              "primary-container": "#c4913e",
-              "on-secondary-fixed": "#410000",
-              "inverse-primary": "#785917",
-              "error-container": "#93000a",
-              "tertiary-container": "#a49f97",
-              "on-primary-fixed-variant": "#5d4200",
-              "surface": "#050403",
-              "on-tertiary-fixed": "#1d1b16",
-              "surface-container-highest": "#373432",
-              "background": "#050403",
-              "surface-container-low": "#1d1b19",
-              "on-background": "#e7e1de",
-              "on-tertiary-container": "#393630",
-              "secondary-container": "#8e130c",
-              "on-surface-variant": "#d1c5b4",
-              "on-secondary": "#690001",
-              "inverse-surface": "#e7e1de",
-              "on-tertiary": "#33302a",
-              "surface-bright": "#3b3936",
-              "error": "#ffb4ab",
-              "on-surface": "#e7e1de",
-              "surface-dim": "#151311",
-              "on-tertiary-fixed-variant": "#494640",
-              "secondary-fixed": "#ffdad5",
-              "primary-fixed-dim": "#eac174",
-              "outline-variant": "#5a5348",
-              "surface-container-lowest": "#100e0c",
-              "surface-container": "#211f1d",
-              "tertiary-fixed-dim": "#cbc6bd",
-              "tertiary-fixed": "#e8e2d9",
-              "on-secondary-container": "#ff9a8b",
-              "on-error": "#690005",
-              "secondary-fixed-dim": "#ffb4a9",
-              "secondary": "#c0392b",
-              "on-error-container": "#ffdad6"
-            },
-            fontFamily: {
-              "headline": ["Cormorant Garamond", "serif"],
-              "body": ["EB Garamond", "serif"],
-              "label": ["Cinzel", "serif"],
-              "mono": ["JetBrains Mono", "monospace"]
-            },
-            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "0px"},
-          },
-        },
-      }
-    </script>
+<script id="tailwind-config">        let currentLang = 'pt';
+        
+        // Start date 18/10/2023 (YYYY, MM-1, DD)
+        const startDate = new Date(2023, 9, 18);
+        const startPrice = 19950;
+        const dailyIncrease = 50;
+        const exchangeRate = 5.31; 
+
+        function calculateCurrentPrice() {
+            const now = new Date();
+            const diffTime = now - startDate;
+            const diffDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+            return startPrice + (diffDays * dailyIncrease);
+        }
+
+        function updateOnlineCounter() {
+            const base = 1200;
+            const variance = Math.floor(Math.random() * 100);
+            document.getElementById('online-counter').innerText = `~${(base + variance).toLocaleString()} ONLINE NOW`;
+        }
+
+        function toggleManifesto() {
+            const content = document.getElementById('manifesto-accordion');
+            const chevron = document.getElementById('manifesto-chevron');
+            const isOpen = content.classList.contains('open');
+            
+            if (isOpen) {
+                content.classList.remove('open');
+                chevron.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('open');
+                chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function updateUI() {
+            const price = calculateCurrentPrice();
+            const usdPrice = price / exchangeRate;
+            
+            const formattedBRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+            const formattedUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(usdPrice);
+
+            document.getElementById('brl-price-display').innerText = formattedBRL;
+            document.getElementById('usd-price-display').innerText = formattedUSD;
+            document.getElementById('modal-price-value').innerText = currentLang === 'pt' ? formattedBRL : formattedUSD;
+
+            const primaryPanel = document.getElementById('primary-price-panel');
+            const secondaryPanel = document.getElementById('secondary-price-panel');
+            
+            const displayDate = startDate.toLocaleDateString(currentLang === 'pt' ? 'pt-BR' : 'en-US', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase().replace(/ DE /g, '_').replace(/ /g, '_');
+            document.getElementById('log-start-date-label').innerText = `START_DATE: ${displayDate}`;
+
+            const urgencyNotice = document.getElementById('urgency-notice').querySelector('p');
+
+            if (currentLang === 'en') {
+                primaryPanel.querySelector('#primary-currency-label').innerText = "Converted (BRL)";
+                primaryPanel.querySelector('#brl-price-display').className = "font-headline text-3xl opacity-80 font-light";
+                
+                secondaryPanel.querySelector('#secondary-currency-label').innerText = "Valuation (USD)";
+                secondaryPanel.querySelector('#usd-price-display').className = "font-headline text-5xl text-primary font-light";
+                
+                document.getElementById('site-title').innerText = "THE GENESIS COPY";
+                document.getElementById('hero-title').innerHTML = `The World's Most Expensive <span class="text-primary italic">Asset</span>`;
+                document.getElementById('hero-quote').innerText = `"Someone else is reading this right now."`;
+                document.getElementById('status-text').innerText = "Not yet acquired";
+                document.getElementById('cta-text').innerText = "Acquire now";
+                document.getElementById('increase-text').innerText = `↑ $ ${(50/exchangeRate).toFixed(0)} TOMORROW`;
+                document.getElementById('log-title').innerText = "Experiment Log";
+                document.getElementById('protocol-text').innerText = "Uncompromising physical possession protocol.";
+                document.getElementById('modal-title').innerText = "Acquisition Protocol";
+                document.getElementById('modal-instruction-text').innerText = "After payment, send the receipt to ricardodbrito@gmail.com.";
+                document.getElementById('modal-submit-btn').innerText = "Send receipt";
+                
+                urgencyNotice.innerText = "When you close this page and return tomorrow, the price will already be different.";
+
+                document.getElementById('manifesto-title').innerText = "MANIFESTO OF POSSESSION";
+                document.getElementById('manifesto-content').innerHTML = `
+                    <p>You are not buying a book.</p>
+<p>Books are replicable. Knowledge is public. The commercial edition is available on Amazon (<a class="text-primary underline" href="https://a.co/d/06PrjFYu" target="_blank">https://a.co/d/06PrjFYu</a>) for a fixed price and will stay there.</p>
+<p>What exists here is different.</p>
+<p>This is the <span class="text-primary italic">Genesis Copy</span> — the only physical, hardbound copy that came directly from the author’s hands before any print run. It carries the certification autograph and an exclusive handwritten note in the margins of the first chapter: a reflection that collapsed during writing and never made it into the final edition.</p>
+<p>Ricardo Brito publicly signs an irrevocable commitment: he will never sign another copy of The Most Expensive Asset in the World. No event, no launch, no future edition will receive his signature. This is the only autograph that will ever exist for this title — forever.</p>
+<p>The price rises by <span class="text-secondary font-mono">$ ${(50/exchangeRate).toFixed(0)}</span> every day because hesitation has a real cost. It is not a metaphor — it is the mechanics of the experiment. Each day that passes without a buyer is data about our relationship with time. And time, as the book explains, is the only asset that is never rebought.</p>
+<p class="pt-4 border-t border-outline-variant/20 italic">The final holder of this copy will not just own a book. They will be the holder of the only object the author touched, signed, and promised never to replicate.</p>
+                `;
+            } else {
+                primaryPanel.querySelector('#primary-currency-label').innerText = "Valuation (BRL)";
+                primaryPanel.querySelector('#brl-price-display').className = "font-headline text-5xl text-primary font-light";
+                
+                secondaryPanel.querySelector('#secondary-currency-label').innerText = "Converted (USD)";
+                secondaryPanel.querySelector('#usd-price-display').className = "font-headline text-3xl opacity-80 font-light";
+
+                document.getElementById('site-title').innerText = "A CÓPIA GÊNESIS";
+                document.getElementById('hero-title').innerHTML = `O <span class="text-primary italic">Ativo</span> Mais Caro do Mundo`;
+                document.getElementById('hero-quote').innerText = `"Alguém mais está lendo isso agora."`;
+                document.getElementById('status-text').innerText = "Ainda não adquirido";
+                document.getElementById('cta-text').innerText = "Adquirir agora";
+                document.getElementById('increase-text').innerText = "↑ R$ 50 AMANHÃ";
+                document.getElementById('log-title').innerText = "Log do Experimento";
+                document.getElementById('protocol-text').innerText = "Protocolo de posse física intransigente.";
+                document.getElementById('modal-title').innerText = "Protocolo de Aquisição";
+                document.getElementById('modal-instruction-text').innerText = "Após o pagamento, envie o comprovante para ricardodbrito@gmail.com.";
+                document.getElementById('modal-submit-btn').innerText = "Enviar comprovante";
+
+                urgencyNotice.innerText = "Quando você fechar esta página, quando voltar amanhã o preço já será outro.";
+
+                document.getElementById('manifesto-title').innerText = "MANIFESTO DE POSSE";
+                document.getElementById('manifesto-content').innerHTML = `
+                    <p>Você não está comprando um livro.</p>
+<p>Livros são replicáveis. Conhecimento é público. A edição comercial está disponível na Amazon (<a class="text-primary underline" href="https://a.co/d/06PrjFYu" target="_blank">https://a.co/d/06PrjFYu</a>) por um preço fixo e vai continuar lá.</p>
+<p>O que existe aqui é diferente.</p>
+<p>Esta é a <span class="text-primary italic">Cópia Gênesis</span> — o único exemplar físico, em capa dura, que saiu diretamente das mãos do autor antes de qualquer tiragem. Ela carrega o autógrafo de certificação e uma anotação manuscrita exclusiva nas margens do primeiro capítulo: uma reflexão que colapsou durante a escrita e nunca entrou na edição final.</p>
+<p>Ricardo Brito assina publicamente um compromisso irrevogável: jamais autografará outro exemplar de O Ativo Mais Caro do Mundo. Nenhum evento, nenhum lançamento, nenhuma edição futura receberá sua assinatura. Este é o único autógrafo que existirá sobre este título — para sempre.</p>
+<p>O preço sobe <span class="text-secondary font-mono">R$ 50</span> todo dia porque hesitação tem custo real. Não é uma metáfora — é a mecânica do experimento. Cada dia que passa sem um comprador é um dado sobre a nossa relação com o tempo. E o tempo, como o livro explica, é o único ativo que nunca se recompra.</p>
+<p class="pt-4 border-t border-outline-variant/20 italic">O portador final desta cópia não será apenas o dono de um livro. Será o detentor do único objeto que o autor tocou, assinou e prometeu nunca mais replicar.</p>
+                `;
+            }
+
+            renderLog();
+        }
+
+        function renderLog() {
+            const grid = document.getElementById('log-grid');
+            grid.innerHTML = '';
+            
+            const days = [-3, -2, -1, 0, 1, 2, 3];
+            const now = new Date();
+
+            days.forEach(offset => {
+                const date = new Date(now);
+                date.setDate(now.getDate() + offset);
+                
+                const diffDays = Math.floor((date - startDate) / (1000 * 60 * 60 * 24));
+                const dayPrice = Math.max(startPrice, startPrice + (diffDays * dailyIncrease));
+                const isToday = offset === 0;
+                const isPast = offset < 0;
+                
+                const cell = document.createElement('div');
+                cell.className = `p-4 border-r border-b border-outline-variant ${isPast ? 'opacity-30' : ''} ${isToday ? 'border-primary bg-primary/5 relative' : ''} ${offset === 3 ? 'border-r-0' : ''}`;
+                
+                let label = date.toLocaleDateString(currentLang === 'pt' ? 'pt-BR' : 'en-US', { day: '2-digit', month: 'short' }).toUpperCase();
+                if (isToday) label = currentLang === 'pt' ? 'HOJE' : 'TODAY';
+
+                let priceVal = dayPrice;
+                let currencySymbol = 'R$';
+                if (currentLang === 'en') {
+                    priceVal = dayPrice / exchangeRate;
+                    currencySymbol = '$';
+                }
+
+                cell.innerHTML = `
+                    <p class="font-mono text-[10px] ${isToday ? 'text-primary' : 'opacity-40'}">${label}</p>
+<p class="font-headline text-xs ${isToday ? 'text-primary font-bold tracking-widest' : ''}">${currencySymbol} ${Math.floor(priceVal).toLocaleString()}</p>
+                    ${isToday ? '<div class="absolute top-1 right-1"><span class="material-symbols-outlined text-[10px] text-primary" style="font-variation-settings: \'FILL\' 1;">star</span></div>' : ''}
+                `;
+                grid.appendChild(cell);
+            });
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'pt' ? 'en' : 'pt';
+            updateUI();
+        }
+
+        function openModal() {
+            document.getElementById('acquisition-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('acquisition-modal').classList.add('hidden');
+        }
+
+        function copyPix() {
+            navigator.clipboard.writeText('ricardodbrito@gmail.com');
+            alert(currentLang === 'pt' ? 'Chave PIX copiada!' : 'PIX key copied!');
+        }
+
+        updateUI();
+        updateOnlineCounter();
+        setInterval(updateUI, 60000);
+        setInterval(updateOnlineCounter, 5000);</script>
 <style>
         body {
             cursor: crosshair;
@@ -112,25 +228,33 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
         .sepia-effect {
-            filter: sepia(0.4) contrast(1.1) brightness(0.7);
+            filter: sepia(0.3) brightness(0.85);
             transition: filter 0.5s ease;
         }
         .book-shadow {
             box-shadow: 0 30px 100px -10px rgba(0,0,0,0.9), 0 0 40px 5px rgba(196, 145, 62, 0.05);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 2000px;
+            padding-bottom: 3rem;
         }
     </style>
 </head>
 <body class="text-tertiary-fixed font-body selection:bg-primary selection:text-surface" id="app">
 <div class="grain"></div>
 <div class="vignette"></div>
-<!-- Navigation Shell -->
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-[#050403] bg-opacity-95 backdrop-blur-sm border-b border-[#5a5348]">
 <div class="font-headline text-2xl font-light tracking-widest text-primary" id="site-title">
             A CÓPIA GÊNESIS
         </div>
 <nav class="hidden md:flex gap-8 items-center h-full">
-<a class="font-label uppercase tracking-[6px] text-xs text-primary border-b-2 border-primary pb-1 hover:bg-primary hover:text-surface transition-colors duration-200" data-lang="log" href="#">LOG</a>
-<a class="font-label uppercase tracking-[6px] text-xs text-tertiary-fixed opacity-70 hover:bg-primary hover:text-surface transition-colors duration-200" data-lang="manifesto" href="#">MANIFESTO</a>
+<a class="font-label uppercase tracking-[6px] text-xs text-tertiary-fixed opacity-70 hover:bg-primary hover:text-surface transition-colors duration-200" data-lang="log" href="#log-section">LOG</a>
+<a class="font-label uppercase tracking-[6px] text-xs text-primary border-b-2 border-primary pb-1 hover:bg-primary hover:text-surface transition-colors duration-200" data-lang="manifesto" href="#manifesto-section">MANIFESTO</a>
 <a class="font-label uppercase tracking-[6px] text-xs text-tertiary-fixed opacity-70 hover:bg-primary hover:text-surface transition-colors duration-200" data-lang="archive" href="#">ARCHIVE</a>
 </nav>
 <div class="flex items-center gap-4">
@@ -149,7 +273,7 @@
 <!-- Book Display -->
 <div class="relative mb-16 group">
 <div class="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-75 opacity-20"></div>
-<img alt="Book Cover" class="w-[180px] md:w-[220px] h-auto relative z-10 border border-outline-variant/20 sepia-effect book-shadow" id="book-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uibaf-L2r7yiI2XaZ9uFG1qAomz_nf2zCpGNNhZEVZppkIjkkPv6Udd-POwqSUuXyc2RcV28-0qSSLPX-wT3KOK2Gkm3WOsSf7RkI8b41pFMbH16WNxmW_5Yss08xvzvJ-TV5D3woib7YAoumvzv442zRQhPkX3dBQ_d1HY-rcLDcWnS2H2R_DzqV_B9feeGUmB7ij6uuOJE6_A8Me3nEhCa-b2xV1mSivxqm-XILH9hEZGfYoVKOQ8vMMtk1rULkfoYunFQQie6A"/>
+<img alt="Book Cover" class="w-[180px] md:w-[220px] h-auto relative z-10 border border-outline-variant sepia-effect book-shadow" id="book-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujiWsOqBGoCgJn9kBmiuikiOERtShZlyCBgVJaC4C5YYeqoFtjBmH6omkV1NLq77sEnGdWF0LT1waSH1T4FGk3ey4dBbZdUaE1uMvzuiPO7vdg1rqxoOS9XrGBtfpsoL5DcqAOQLq2UXwWQL4INXLWV4JozeaxodHg_dwE5NAB1iwzhzoLV1zOyAJiT4A4GfumRJe6LTyoZYTIRYZPhHmXitptepKH9L14_X-nHv_hZvsjE6TCbzj58LZkt0MsbrL_pfwjBgV0f"/>
 <div class="absolute -bottom-4 -right-4 bg-surface px-2 py-1 border border-outline-variant z-20">
 <p class="font-mono text-[9px] tracking-tighter opacity-60">REF: #001/001</p>
 </div>
@@ -161,7 +285,11 @@
             </h1>
 </div>
 <!-- Pricing Grid -->
-<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant mb-16" id="pricing-grid">
+<div class="w-full text-center mb-8 px-4" id="urgency-notice">
+<p class="font-headline text-xl md:text-2xl text-primary italic leading-relaxed">
+        Quando você fechar esta página, quando voltar amanhã o preço já será outro.
+    </p>
+</div><div class="w-full grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant mb-16" id="pricing-grid">
 <!-- Left Panel (Primary Currency) -->
 <div class="bg-surface p-10 flex flex-col items-center justify-center space-y-2 order-1 md:order-none" id="primary-price-panel">
 <span class="font-label text-[10px] tracking-[5px] opacity-40 uppercase" id="primary-currency-label">Valuation (BRL)</span>
@@ -177,7 +305,7 @@
 <span class="font-label text-[10px] tracking-[5px] opacity-40 uppercase" id="secondary-currency-label">Converted (USD)</span>
 <div class="font-headline text-3xl opacity-80 font-light" id="usd-price-display">$ 3,990.00</div>
 </div>
-<div class="flex flex-col items-center gap-2">
+<div class="flex flex-col items-center gap-1">
 <div class="flex items-center gap-2 text-primary font-mono text-[10px] tracking-widest">
 <div class="w-1.5 h-1.5 rounded-full bg-green-500 pulse-green"></div>
 <span id="online-counter">~1.247 ONLINE NOW</span>
@@ -188,11 +316,25 @@
 </div>
 </div>
 </div>
+<!-- MANIFESTO DE POSSE SECTION (Accordion) -->
+<section class="w-full border-y border-outline-variant/30 mb-16 overflow-hidden" id="manifesto-section">
+<button class="w-full py-8 flex flex-col items-center group outline-none" onclick="toggleManifesto()">
+<div class="flex items-center gap-4">
+<h2 class="font-label text-xs tracking-[8px] uppercase text-primary text-center" id="manifesto-title">MANIFESTO DE POSSE</h2>
+<span class="material-symbols-outlined text-primary text-sm transition-transform duration-300" data-icon="expand_more" id="manifesto-chevron">expand_more</span>
+</div>
+</button>
+<div class="accordion-content px-4" id="manifesto-accordion">
+<div class="max-w-[600px] mx-auto font-headline text-lg md:text-xl text-center leading-[1.8] space-y-8 text-on-surface/90" id="manifesto-content">
+<!-- Data will be populated via JS -->
+</div>
+</div>
+</section>
 <!-- Experiment Log -->
-<div class="w-full mb-16">
+<div class="w-full mb-16" id="log-section">
 <div class="flex justify-between items-end mb-4 px-2">
 <h3 class="font-label text-xs tracking-[5px] uppercase" id="log-title">Log do Experimento</h3>
-<span class="font-mono text-[9px] opacity-40">START_DATE: 19_MAR_2026</span>
+<span class="font-mono text-[9px] opacity-40" id="log-start-date-label">START_DATE: 18_OCT_2023</span>
 </div>
 <div class="border border-outline-variant grid grid-cols-3 md:grid-cols-7 text-center" id="log-grid">
 <!-- Data will be populated via JS -->
@@ -212,9 +354,7 @@
             © MMXXIV ARTEFATO #001/001
         </div>
 <div class="flex gap-8">
-<a class="font-mono text-[10px] tracking-tighter uppercase text-[#5a5348] hover:text-tertiary-fixed transition-colors" href="https://a.co/d/0fYQVayb" target="_blank">AMAZON_LINK</a>
-<a class="font-mono text-[10px] tracking-tighter uppercase text-[#5a5348] hover:text-tertiary-fixed transition-colors" href="#">PRIVACY</a>
-<a class="font-mono text-[10px] tracking-tighter uppercase text-[#5a5348] hover:text-tertiary-fixed transition-colors" href="#">TERMINAL</a>
+<a class="font-mono text-[10px] tracking-tighter uppercase text-[#5a5348] hover:text-tertiary-fixed transition-colors" href="https://a.co/d/06PrjFYu" id="footer-amazon-link" target="_blank">AMAZON_LINK</a>
 </div>
 <div class="font-mono text-[10px] tracking-tighter uppercase text-[#5a5348]">
             MMXXIV SOVEREIGN ARCHIVE. ALL RIGHTS RESERVED.
@@ -237,7 +377,7 @@
 </div>
 <div class="space-y-4">
 <div class="p-4 border border-outline-variant bg-surface/50 font-body text-sm italic opacity-80" id="modal-instruction-text">
-                        Após o pagamento, envie o comprovante e seu endereço completo para ricardodbrito@gmail.com.
+                        Após o pagamento, envie o comprovante para ricardodbrito@gmail.com.
                     </div>
 </div>
 <div class="bg-surface-container-high border border-outline-variant p-6 space-y-3">
@@ -256,17 +396,18 @@
 <!-- Decoration -->
 <div class="fixed top-1/4 left-0 w-px h-64 bg-gradient-to-b from-transparent via-outline-variant/30 to-transparent"></div>
 <div class="fixed bottom-1/4 right-0 w-px h-64 bg-gradient-to-b from-transparent via-outline-variant/30 to-transparent"></div>
-<script>
-        let currentLang = 'pt';
-        const startDate = new Date('2026-03-19');
+<script>        let currentLang = 'pt';
+        
+        // Start date 18/10/2023 (YYYY, MM-1, DD)
+        const startDate = new Date(2023, 9, 18);
         const startPrice = 19950;
         const dailyIncrease = 50;
         const exchangeRate = 5.31; 
 
         function calculateCurrentPrice() {
             const now = new Date();
-            const diffTime = Math.abs(now - startDate);
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const diffTime = now - startDate;
+            const diffDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
             return startPrice + (diffDays * dailyIncrease);
         }
 
@@ -274,6 +415,20 @@
             const base = 1200;
             const variance = Math.floor(Math.random() * 100);
             document.getElementById('online-counter').innerText = `~${(base + variance).toLocaleString()} ONLINE NOW`;
+        }
+
+        function toggleManifesto() {
+            const content = document.getElementById('manifesto-accordion');
+            const chevron = document.getElementById('manifesto-chevron');
+            const isOpen = content.classList.contains('open');
+            
+            if (isOpen) {
+                content.classList.remove('open');
+                chevron.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('open');
+                chevron.style.transform = 'rotate(180deg)';
+            }
         }
 
         function updateUI() {
@@ -287,12 +442,14 @@
             document.getElementById('usd-price-display').innerText = formattedUSD;
             document.getElementById('modal-price-value').innerText = currentLang === 'pt' ? formattedBRL : formattedUSD;
 
-            // Updated Book Cover Logic
-            document.getElementById('book-cover').src = currentLang === 'pt' ? '{{DATA:IMAGE:IMAGE_19}}' : '{{DATA:IMAGE:IMAGE_10}}';
-
             const primaryPanel = document.getElementById('primary-price-panel');
             const secondaryPanel = document.getElementById('secondary-price-panel');
             
+            const displayDate = startDate.toLocaleDateString(currentLang === 'pt' ? 'pt-BR' : 'en-US', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase().replace(/ DE /g, '_').replace(/ /g, '_');
+            document.getElementById('log-start-date-label').innerText = `START_DATE: ${displayDate}`;
+
+            const urgencyNotice = document.getElementById('urgency-notice').querySelector('p');
+
             if (currentLang === 'en') {
                 primaryPanel.querySelector('#primary-currency-label').innerText = "Converted (BRL)";
                 primaryPanel.querySelector('#brl-price-display').className = "font-headline text-3xl opacity-80 font-light";
@@ -309,8 +466,21 @@
                 document.getElementById('log-title').innerText = "Experiment Log";
                 document.getElementById('protocol-text').innerText = "Uncompromising physical possession protocol.";
                 document.getElementById('modal-title').innerText = "Acquisition Protocol";
-                document.getElementById('modal-instruction-text').innerText = "After payment, send the receipt and your full delivery address to ricardodbrito@gmail.com.";
+                document.getElementById('modal-instruction-text').innerText = "After payment, send the receipt to ricardodbrito@gmail.com.";
                 document.getElementById('modal-submit-btn').innerText = "Send receipt";
+                
+                urgencyNotice.innerText = "When you close this page and return tomorrow, the price will already be different.";
+
+                document.getElementById('manifesto-title').innerText = "MANIFESTO OF POSSESSION";
+                document.getElementById('manifesto-content').innerHTML = `
+                    <p>You are not buying a book.</p>
+<p>Books are replicable. Knowledge is public. The commercial edition is available on Amazon (<a class="text-primary underline" href="https://a.co/d/06PrjFYu" target="_blank">https://a.co/d/06PrjFYu</a>) for a fixed price and will stay there.</p>
+<p>What exists here is different.</p>
+<p>This is the <span class="text-primary italic">Genesis Copy</span> — the only physical, hardbound copy that came directly from the author’s hands before any print run. It carries the certification autograph and an exclusive handwritten note in the margins of the first chapter: a reflection that collapsed during writing and never made it into the final edition.</p>
+<p>Ricardo Brito publicly signs an irrevocable commitment: he will never sign another copy of The Most Expensive Asset in the World. No event, no launch, no future edition will receive his signature. This is the only autograph that will ever exist for this title — forever.</p>
+<p>The price rises by <span class="text-secondary font-mono">$ ${(50/exchangeRate).toFixed(0)}</span> every day because hesitation has a real cost. It is not a metaphor — it is the mechanics of the experiment. Each day that passes without a buyer is data about our relationship with time. And time, as the book explains, is the only asset that is never rebought.</p>
+<p class="pt-4 border-t border-outline-variant/20 italic">The final holder of this copy will not just own a book. They will be the holder of the only object the author touched, signed, and promised never to replicate.</p>
+                `;
             } else {
                 primaryPanel.querySelector('#primary-currency-label').innerText = "Valuation (BRL)";
                 primaryPanel.querySelector('#brl-price-display').className = "font-headline text-5xl text-primary font-light";
@@ -327,8 +497,21 @@
                 document.getElementById('log-title').innerText = "Log do Experimento";
                 document.getElementById('protocol-text').innerText = "Protocolo de posse física intransigente.";
                 document.getElementById('modal-title').innerText = "Protocolo de Aquisição";
-                document.getElementById('modal-instruction-text').innerText = "Após o pagamento, envie o comprovante e seu endereço completo para ricardodbrito@gmail.com.";
+                document.getElementById('modal-instruction-text').innerText = "Após o pagamento, envie o comprovante para ricardodbrito@gmail.com.";
                 document.getElementById('modal-submit-btn').innerText = "Enviar comprovante";
+
+                urgencyNotice.innerText = "Quando você fechar esta página, quando voltar amanhã o preço já será outro.";
+
+                document.getElementById('manifesto-title').innerText = "MANIFESTO DE POSSE";
+                document.getElementById('manifesto-content').innerHTML = `
+                    <p>Você não está comprando um livro.</p>
+<p>Livros são replicáveis. Conhecimento é público. A edição comercial está disponível na Amazon (<a class="text-primary underline" href="https://a.co/d/06PrjFYu" target="_blank">https://a.co/d/06PrjFYu</a>) por um preço fixo e vai continuar lá.</p>
+<p>O que existe aqui é diferente.</p>
+<p>Esta é a <span class="text-primary italic">Cópia Gênesis</span> — o único exemplar físico, em capa dura, que saiu diretamente das mãos do autor antes de qualquer tiragem. Ela carrega o autógrafo de certificação e uma anotação manuscrita exclusiva nas margens do primeiro capítulo: uma reflexão que colapsou durante a escrita e nunca entrou na edição final.</p>
+<p>Ricardo Brito assina publicamente um compromisso irrevogável: jamais autografará outro exemplar de O Ativo Mais Caro do Mundo. Nenhum evento, nenhum lançamento, nenhuma edição futura receberá sua assinatura. Este é o único autógrafo que existirá sobre este título — para sempre.</p>
+<p>O preço sobe <span class="text-secondary font-mono">R$ 50</span> todo dia porque hesitação tem custo real. Não é uma metáfora — é a mecânica do experimento. Cada dia que passa sem um comprador é um dado sobre a nossa relação com o tempo. E o tempo, como o livro explica, é o único ativo que nunca se recompra.</p>
+<p class="pt-4 border-t border-outline-variant/20 italic">O portador final desta cópia não será apenas o dono de um livro. Será o detentor do único objeto que o autor tocou, assinou e prometeu nunca mais replicar.</p>
+                `;
             }
 
             renderLog();
@@ -346,7 +529,7 @@
                 date.setDate(now.getDate() + offset);
                 
                 const diffDays = Math.floor((date - startDate) / (1000 * 60 * 60 * 24));
-                const dayPrice = startPrice + (diffDays * dailyIncrease);
+                const dayPrice = Math.max(startPrice, startPrice + (diffDays * dailyIncrease));
                 const isToday = offset === 0;
                 const isPast = offset < 0;
                 
@@ -365,7 +548,7 @@
 
                 cell.innerHTML = `
                     <p class="font-mono text-[10px] ${isToday ? 'text-primary' : 'opacity-40'}">${label}</p>
-                    <p class="font-headline text-xs ${isToday ? 'text-primary font-bold tracking-widest' : ''}">${currencySymbol} ${Math.floor(priceVal).toLocaleString()}</p>
+<p class="font-headline text-xs ${isToday ? 'text-primary font-bold tracking-widest' : ''}">${currencySymbol} ${Math.floor(priceVal).toLocaleString()}</p>
                     ${isToday ? '<div class="absolute top-1 right-1"><span class="material-symbols-outlined text-[10px] text-primary" style="font-variation-settings: \'FILL\' 1;">star</span></div>' : ''}
                 `;
                 grid.appendChild(cell);
@@ -393,6 +576,5 @@
         updateUI();
         updateOnlineCounter();
         setInterval(updateUI, 60000);
-        setInterval(updateOnlineCounter, 5000);
-    </script>
+        setInterval(updateOnlineCounter, 5000);</script>
 </body></html>
