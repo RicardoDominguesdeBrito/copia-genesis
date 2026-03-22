@@ -22,6 +22,20 @@
                         body: ['Cormorant Garamond', 'serif'],
                         label: ['JetBrains Mono', 'monospace'],
                         mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-glow': 'pulse-glow 3s infinite',
+                        'soft-fade': 'soft-fade 4s infinite',
+                    },
+                    keyframes: {
+                        'pulse-glow': {
+                            '0%, 100%': { 'box-shadow': '0 0 15px -5px rgba(196, 145, 62, 0.2)', 'border-color': 'rgba(90, 83, 72, 0.3)' },
+                            '50%': { 'box-shadow': '0 0 30px 2px rgba(196, 145, 62, 0.4)', 'border-color': 'rgba(196, 145, 62, 0.6)' },
+                        },
+                        'soft-fade': {
+                            '0%, 100%': { opacity: 0.3, transform: 'translateY(0)' },
+                            '50%': { opacity: 1, transform: 'translateY(-2px)' },
+                        }
                     }
                 }
             }
@@ -155,11 +169,16 @@
 </div>
 </div>
 <!-- MANIFESTO SECTION -->
-<section class="w-full border-y border-outline-variant/20 mb-20 overflow-hidden" id="manifesto-section">
-<button class="w-full py-10 flex flex-col items-center group outline-none" onclick="toggleManifesto()">
+<section class="w-full border border-outline-variant/20 mb-20 overflow-hidden animate-pulse-glow hover:scale-[1.01] hover:brightness-110 transition-all duration-500 cursor-pointer rounded-sm" id="manifesto-section">
+<button class="w-full py-12 flex flex-col items-center group outline-none" onclick="toggleManifesto()">
+<div class="flex flex-col items-center gap-4">
 <div class="flex items-center gap-6">
-<h2 class="font-label text-xs tracking-[10px] uppercase text-primary/80 group-hover:text-primary transition-colors" id="manifesto-title">MANIFESTO DE POSSE</h2>
+<h2 class="font-label text-xs tracking-[10px] uppercase text-primary group-hover:tracking-[12px] transition-all duration-500" id="manifesto-title">MANIFESTO DE POSSE</h2>
 <span class="material-symbols-outlined text-primary text-xl transition-transform duration-500" id="manifesto-chevron">expand_more</span>
+</div>
+<span class="font-mono text-[9px] tracking-[3px] uppercase text-primary/60 animate-soft-fade" id="click-to-understand">
+                        (clique para entender)
+                    </span>
 </div>
 </button>
 <div class="accordion-content px-6 md:px-12" id="manifesto-accordion">
@@ -241,7 +260,7 @@
         const startDate = new Date(2023, 9, 18); // 18 Oct 2023
         const startPrice = 1000;
         const dailyIncrease = 50;
-        const exchangeRate = 5.60; // Dynamic approx
+        const exchangeRate = 5.60;
 
         function calculateCurrentPrice() {
             const now = new Date();
@@ -267,6 +286,7 @@
             } else {
                 content.classList.add('open');
                 chevron.style.transform = 'rotate(180deg)';
+                // Scroll slightly to content if needed
             }
         }
 
@@ -303,6 +323,7 @@
                 document.getElementById('primary-currency-label').innerText = "Converted (BRL)";
                 document.getElementById('secondary-currency-label').innerText = "Valuation (USD)";
                 document.getElementById('manifesto-title').innerText = "MANIFESTO OF POSSESSION";
+                document.getElementById('click-to-understand').innerText = "(click to understand)";
                 
                 urgencyNotice.innerText = "\"When you close this page and return tomorrow, the price will already be different.\"";
 
@@ -332,6 +353,7 @@
                 document.getElementById('primary-currency-label').innerText = "Valuation (BRL)";
                 document.getElementById('secondary-currency-label').innerText = "Converted (USD)";
                 document.getElementById('manifesto-title').innerText = "MANIFESTO DE POSSE";
+                document.getElementById('click-to-understand').innerText = "(clique para entender)";
 
                 urgencyNotice.innerText = "\"Quando você fechar esta página, quando voltar amanhã o preço já será outro.\"";
 
