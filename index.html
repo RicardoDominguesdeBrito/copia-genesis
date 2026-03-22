@@ -646,50 +646,77 @@
     }
 
     // ═══════════════════════════════════
-    // LOG CRONOLÓGICO
+    // LOG CRONOLÓGICO — datas e preços reais
     // ═══════════════════════════════════
     function renderLog() {
       const lang = document.body.classList.contains('en') ? 'en' : 'pt';
-      const precoAmanha = "R$ " + (precoAtual + INCREMENTO).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+      const mesesPT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+      const mesesEN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+      function fmtData(d) {
+        const mes = lang === 'en' ? mesesEN[d.getMonth()] : mesesPT[d.getMonth()];
+        return d.getDate().toString().padStart(2,'0') + ' ' + mes;
+      }
+
+      function fmtP(v) {
+        return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      }
+
+      function addD(base, n) {
+        const r = new Date(base); r.setDate(r.getDate() + n); return r;
+      }
+
+      // Marcos especiais
+      const marcos = {
+        0:  { pt: 'Experimento iniciado.',           en: 'Experiment launched.' },
+        7:  { pt: 'Uma semana. Sem comprador.',       en: 'One week. No buyer.' },
+        14: { pt: 'Duas semanas sem reivindicação.',  en: 'Two weeks unclaimed.' },
+        30: { pt: 'Um mês. O experimento persiste.',  en: 'One month. Experiment persists.' },
+        60: { pt: 'Dois meses. O preço não para.',    en: 'Two months. Price keeps rising.' },
+        90: { pt: 'Três meses. Artefato ainda livre.', en: 'Three months. Still unclaimed.' },
+      };
 
       const entries = [];
 
-      const msgs = {
-        d0:    { pt: `Experimento iniciado. Preço de largada: R$ 1.000,00.`,
-                 en: `Experiment started. Opening price: R$ 1,000.00.` },
-        d1:    { pt: `Primeira atualização de cotação. Mercado não se moveu.`,
-                 en: `First price update. The market did not move.` },
-        d3:    { pt: `Cotação atinge R$ ${(1000+3*50).toLocaleString('pt-BR',{minimumFractionDigits:2})}. O silêncio tem um custo.`,
-                 en: `Price reaches R$ ${(1000+3*50).toLocaleString('pt-BR',{minimumFractionDigits:2})}. Silence has a cost.` },
-        d7:    { pt: `Uma semana. O experimento continua. O mercado, em silêncio.`,
-                 en: `One week. The experiment continues. The market, silent.` },
-        d14:   { pt: `Duas semanas. Cada dia é um dado sobre o custo da hesitação.`,
-                 en: `Two weeks. Each day is data on the cost of hesitation.` },
-        d30:   { pt: `Um mês. A cotação ultrapassa R$ ${(1000+30*50).toLocaleString('pt-BR',{minimumFractionDigits:2})}.`,
-                 en: `One month. Price surpasses R$ ${(1000+30*50).toLocaleString('pt-BR',{minimumFractionDigits:2})}.` },
-        hoje:  { pt: `Dia ${dias}. Cotação: ${precoFmt}. Artefato não reivindicado.`,
-                 en: `Day ${dias}. Price: ${precoFmt}. Artifact unclaimed.` },
-        amanha:{ pt: `Amanhã o preço sobe para ${precoAmanha}.`,
-                 en: `Tomorrow the price rises to ${precoAmanha}.` },
-      };
+      // Histórico: todos os dias desde o início até hoje
+      // Exibe no máximo os últimos 6 dias + hoje + amanhã
+      const inicio = Math.max(0, dias - 5);
+      for (let i = inicio; i <= dias; i++) {
+        const dataEntry  = addD(DATA_INICIO, i);
+        const precoEntry = PRECO_BASE + i * INCREMENTO;
+        const isMarco    = marcos[i] !== undefined;
+        const isHoje     = i === dias;
 
-      const dayLabel = { pt: 'Dia', en: 'Day' };
-      const todayLabel = { pt: 'Hoje', en: 'Today' };
-      const tomorrowLabel = { pt: 'Amanhã', en: 'Tomorrow' };
+        let msg;
+        if (isMarco && isHoje) {
+          msg = marcos[i][lang] + ' ' + fmtP(precoEntry) + (lang === 'en' ? ' — not acquired.' : ' — não adquirido.');
+        } else if (isMarco) {
+          msg = marcos[i][lang] + ' ' + fmtP(precoEntry);
+        } else if (isHoje) {
+          msg = fmtP(precoEntry) + (lang === 'en' ? ' — not acquired.' : ' — não adquirido.');
+        } else {
+          msg = fmtP(precoEntry) + (lang === 'en' ? ' — not acquired.' : ' — não adquirido.');
+        }
 
-      entries.push({ time: `${dayLabel[lang]} 0`, msg: msgs.d0[lang], tipo: 'alert' });
-      if (dias >= 1)  entries.push({ time: `${dayLabel[lang]} 1`,  msg: msgs.d1[lang],   tipo: '' });
-      if (dias >= 3)  entries.push({ time: `${dayLabel[lang]} 3`,  msg: msgs.d3[lang],   tipo: '' });
-      if (dias >= 7)  entries.push({ time: `${dayLabel[lang]} 7`,  msg: msgs.d7[lang],   tipo: 'alert' });
-      if (dias >= 14) entries.push({ time: `${dayLabel[lang]} 14`, msg: msgs.d14[lang],  tipo: '' });
-      if (dias >= 30) entries.push({ time: `${dayLabel[lang]} 30`, msg: msgs.d30[lang],  tipo: 'alert' });
+        entries.push({
+          time: fmtData(dataEntry),
+          msg:  msg,
+          tipo: isHoje ? 'alert' : (isMarco ? 'alert' : '')
+        });
+      }
 
-      entries.push({ time: todayLabel[lang],    msg: msgs.hoje[lang],   tipo: 'alert' });
-      entries.push({ time: tomorrowLabel[lang], msg: msgs.amanha[lang], tipo: 'dim' });
+      // Amanhã
+      const dataAmanha  = addD(DATA_INICIO, dias + 1);
+      const precoAmanha = PRECO_BASE + (dias + 1) * INCREMENTO;
+      entries.push({
+        time: fmtData(dataAmanha),
+        msg:  fmtP(precoAmanha) + (lang === 'en' ? ' — next price.' : ' — próxima cotação.'),
+        tipo: 'dim'
+      });
 
-      const recent = entries.slice(-5);
       const container = document.getElementById('log-entries');
-      container.innerHTML = recent.map(e => `
+      container.innerHTML = entries.map(e => `
         <div class="log-entry">
           <span class="log-time">${e.time}</span>
           <span class="log-msg ${e.tipo}">${e.msg}</span>
