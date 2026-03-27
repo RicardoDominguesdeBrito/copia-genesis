@@ -196,9 +196,24 @@
 </div>
 </main>
 <footer class="w-full py-16 px-8 flex flex-col items-center gap-10 bg-surface border-t border-outline-variant/20 relative z-40">
-<a class="font-label text-[11px] tracking-[6px] uppercase text-primary border-b border-primary/30 pb-1 hover:text-white transition-colors" href="https://a.co/d/06PrjFYu" id="footer-amazon-link" target="_blank">
-            AMAZON_OFFICIAL_EDITION
-        </a>
+    
+    <a href="https://a.co/d/06PrjFYu" target="_blank" class="w-full max-w-xl group block outline-none mb-8 cursor-pointer">
+        <div class="relative p-8 md:p-10 border border-outline-variant/20 bg-outline-variant/5 overflow-hidden transition-all duration-700 hover:border-primary/50 hover:bg-primary/5 hover:shadow-[0_0_40px_rgba(196,145,62,0.15)] rounded-sm">
+            <div class="flex flex-col items-center text-center gap-4 relative z-10">
+                <span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors duration-500 text-3xl">import_contacts</span>
+                <p class="font-body text-xl italic text-outline-variant group-hover:text-[#d1cfcb] transition-colors duration-500" id="amazon-hint">
+                    "O artefato é para um. O conhecimento é para todos."
+                </p>
+                <div class="mt-4 inline-flex items-center gap-3 border-b border-primary/30 pb-1">
+                    <span class="font-label text-[10px] tracking-[6px] uppercase text-primary group-hover:text-white transition-colors duration-300" id="amazon-link-text">
+                        DECODIFICAR EDIÇÃO COMERCIAL
+                    </span>
+                    <span class="material-symbols-outlined text-[14px] text-primary group-hover:translate-x-2 transition-transform duration-300">arrow_forward</span>
+                </div>
+            </div>
+        </div>
+    </a>
+
 <div class="flex flex-col items-center gap-2 opacity-30 text-center">
 <div class="font-bold font-label text-[10px] tracking-[4px]">
                 © MMXXIV ARTEFATO #001/001
@@ -313,6 +328,10 @@
                 document.getElementById('manifesto-title').innerText = "MANIFESTO OF POSSESSION";
                 document.getElementById('click-to-understand').innerText = "(click to understand)";
                 
+                // Updates for the new Amazon Block (English)
+                document.getElementById('amazon-hint').innerText = '"The artifact is for one. The knowledge is for all."';
+                document.getElementById('amazon-link-text').innerText = "DECODE COMMERCIAL EDITION";
+                
                 urgencyNotice.innerText = "\"When you close this page and return tomorrow, the price will already be different.\"";
 
                 document.getElementById('manifesto-content').innerHTML = `
@@ -342,6 +361,10 @@
                 document.getElementById('secondary-currency-label').innerText = "Converted (USD)";
                 document.getElementById('manifesto-title').innerText = "MANIFESTO DE POSSE";
                 document.getElementById('click-to-understand').innerText = "(clique para entender)";
+                
+                // Updates for the new Amazon Block (Portuguese)
+                document.getElementById('amazon-hint').innerText = '"O artefato é para um. O conhecimento é para todos."';
+                document.getElementById('amazon-link-text').innerText = "DECODIFICAR EDIÇÃO COMERCIAL";
 
                 urgencyNotice.innerText = "\"Quando você fechar esta página, quando voltar amanhã o preço já será outro.\"";
 
