@@ -376,4 +376,54 @@
                 const isPast = offset < 0;
                 
                 const cell = document.createElement('div');
-                cell.className = `p-6 border-r border-b border-outline-variant/30 ${isPast ?
+                cell.className = `p-6 border-r border-b border-outline-variant/30 ${isPast ? 'opacity-30' : ''} ${isToday ? 'border-primary bg-primary/10 relative z-10 scale-[1.02] shadow-xl' : ''} ${idx % 7 === 6 ? 'border-r-0' : ''}`;
+                
+                let label = date.toLocaleDateString(currentLang === 'pt' ? 'pt-BR' : 'en-US', { day: '2-digit', month: 'short' }).toUpperCase();
+                if (isToday) label = currentLang === 'pt' ? 'HOJE' : 'TODAY';
+
+                let priceVal = dayPrice;
+                let currencySymbol = 'R$';
+                if (currentLang === 'en') {
+                    priceVal = dayPrice / exchangeRate;
+                    currencySymbol = '$';
+                }
+
+                cell.innerHTML = `
+                    <p class="font-mono text-[10px] mb-2 ${isToday ? 'text-primary font-bold' : 'opacity-40'}">${label}</p>
+                    <p class="font-headline text-sm ${isToday ? 'text-primary font-bold tracking-widest' : ''}">${currencySymbol} ${Math.floor(priceVal).toLocaleString()}</p>
+                    ${isToday ? '<div class="absolute top-2 right-2"><span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: \'FILL\' 1;">star</span></div>' : ''}
+                `;
+                grid.appendChild(cell);
+            });
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'pt' ? 'en' : 'pt';
+            updateUI();
+        }
+
+        function openModal() {
+            document.getElementById('acquisition-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('acquisition-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function copyPix() {
+            navigator.clipboard.writeText('ricardodbrito@gmail.com');
+            const btn = document.getElementById('copy-btn-text');
+            const originalText = btn.innerText;
+            btn.innerText = currentLang === 'pt' ? 'COPIADO!' : 'COPIED!';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        }
+
+        // Initialize
+        updateUI();
+        updateOnlineCounter();
+        setInterval(updateUI, 60000);
+        setInterval(updateOnlineCounter, 4000);
+    </script>
+</body></html>
