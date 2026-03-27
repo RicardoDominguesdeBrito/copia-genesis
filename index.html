@@ -77,4 +77,303 @@
             animation: pulse-green 2s infinite;
         }
         @keyframes pulse-green {
-            0% { transform: scale(0.95); box-shadow: 0
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .sepia-effect {
+            filter: sepia(0.6) brightness(0.7) contrast(1.1);
+            transition: filter 0.5s ease;
+        }
+        .book-shadow {
+            box-shadow: 0 30px 100px -10px rgba(0,0,0,1), 0 0 60px 5px rgba(196, 145, 62, 0.1);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 3000px;
+            padding-bottom: 4rem;
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-primary selection:text-surface">
+<div class="grain"></div>
+<div class="vignette"></div>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-surface/95 backdrop-blur-sm border-b border-outline-variant/30">
+<div class="font-headline text-xl md:text-2xl font-light tracking-widest text-primary" id="site-title">
+            A CÓPIA GÊNESIS
+        </div>
+<nav class="hidden md:flex gap-12 items-center h-full">
+<a class="font-label uppercase tracking-[6px] text-[10px] text-tertiary-fixed opacity-70 hover:text-primary transition-colors" href="#log-section">LOG</a>
+<a class="font-label uppercase tracking-[6px] text-[10px] text-tertiary-fixed opacity-70 hover:text-primary transition-colors" href="#manifesto-section">MANIFESTO</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="font-label text-[10px] tracking-[4px] border border-outline-variant px-3 py-1.5 hover:bg-primary hover:text-surface transition-all" onclick="toggleLanguage()">
+                PT / EN
+            </button>
+</div>
+</header>
+<main class="relative pt-40 pb-24 px-6 md:px-0 max-w-4xl mx-auto flex flex-col items-center">
+<div class="flex items-center gap-3 mb-16">
+<div class="w-2 h-2 rounded-full bg-secondary pulse-red"></div>
+<span class="font-label text-[10px] tracking-[4px] uppercase text-secondary font-bold" id="status-text">Ainda não adquirido</span>
+</div>
+<div class="relative mb-20 group">
+<div class="absolute inset-0 bg-primary/10 blur-[120px] rounded-full scale-110 opacity-30"></div>
+<img alt="Cópia Gênesis" class="w-[220px] md:w-[280px] h-auto relative z-10 border border-outline-variant/50 sepia-effect book-shadow" id="book-cover" src="1774576506087.png"/>
+<div class="absolute -bottom-6 -right-6 bg-surface px-3 py-1.5 border border-outline-variant z-20">
+<p class="font-mono text-[10px] tracking-widest opacity-80" id="ref-label">REF: #001/001_GENESIS</p>
+</div>
+</div>
+<div class="text-center mb-16">
+<h1 class="font-headline text-4xl md:text-7xl font-light mb-8 leading-tight tracking-tight" id="hero-title">
+                O <span class="text-primary italic">Ativo</span> Mais Caro do Mundo
+            </h1>
+</div>
+<div class="w-full text-center mb-10 px-4" id="urgency-notice">
+<p class="font-headline text-xl md:text-2xl text-primary italic leading-relaxed opacity-90 transition-opacity duration-500">
+                "Quando você fechar esta página, quando voltar amanhã o preço já será outro."
+            </p>
+</div>
+<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant/30 border border-outline-variant/30 mb-20 shadow-2xl" id="pricing-grid">
+<div class="bg-surface p-12 flex flex-col items-center justify-center space-y-4" id="primary-price-panel">
+<span class="font-label text-[10px] tracking-[5px] opacity-40 uppercase" id="primary-currency-label">Valuation (BRL)</span>
+<div class="font-headline text-5xl md:text-6xl text-primary font-light" id="brl-price-display">R$ 0,00</div>
+<div class="flex items-center gap-2 text-secondary font-mono text-xs font-bold pt-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span id="increase-text">↑ R$ 50 AMANHÃ</span>
+</div>
+</div>
+<div class="bg-surface p-12 flex flex-col items-center justify-center space-y-6" id="secondary-price-panel">
+<div class="flex flex-col items-center space-y-2">
+<span class="font-label text-[10px] tracking-[5px] opacity-40 uppercase" id="secondary-currency-label">Converted (USD)</span>
+<div class="font-headline text-4xl opacity-70 font-light" id="usd-price-display">$ 0.00</div>
+</div>
+<div class="flex flex-col items-center gap-3 pt-2">
+<div class="flex items-center gap-3 text-primary font-mono text-[11px] tracking-widest">
+<div class="w-2 h-2 rounded-full bg-green-500 pulse-green"></div>
+<span id="online-counter">~1,247 ONLINE NOW</span>
+</div>
+<p class="font-body italic text-base opacity-60 text-center max-w-[200px]" id="hero-quote">
+                        "Alguém mais está lendo isso agora."
+                    </p>
+</div>
+</div>
+</div>
+<section class="w-full border border-outline-variant/20 mb-20 overflow-hidden animate-pulse-glow hover:scale-[1.01] hover:brightness-110 transition-all duration-500 cursor-pointer rounded-sm" id="manifesto-section">
+<button class="w-full py-12 flex flex-col items-center group outline-none" onclick="toggleManifesto()">
+<div class="flex flex-col items-center gap-4">
+<div class="flex items-center gap-6">
+<h2 class="font-label text-xs tracking-[10px] uppercase text-primary group-hover:tracking-[12px] transition-all duration-500" id="manifesto-title">MANIFESTO DE POSSE</h2>
+<span class="material-symbols-outlined text-primary text-xl transition-transform duration-500" id="manifesto-chevron">expand_more</span>
+</div>
+<span class="font-mono text-[9px] tracking-[3px] uppercase text-primary/60 animate-soft-fade" id="click-to-understand">
+                        (clique para entender)
+                    </span>
+</div>
+</button>
+<div class="accordion-content px-6 md:px-12" id="manifesto-accordion">
+<div class="max-w-[700px] mx-auto font-body text-xl md:text-2xl text-center leading-[1.8] space-y-10 text-on-surface/90 pb-12" id="manifesto-content">
+</div>
+</div>
+</section>
+<div class="w-full mb-24" id="log-section">
+<div class="flex justify-between items-end mb-6 px-2">
+<h3 class="font-label text-[11px] tracking-[6px] uppercase text-primary/60" id="log-title">LOG DO EXPERIMENTO</h3>
+<span class="font-mono text-[10px] opacity-40 tracking-tighter" id="log-start-date-label">START_DATE: 18_OCT_2023</span>
+</div>
+<div class="border border-outline-variant/30 grid grid-cols-3 md:grid-cols-7 text-center bg-outline-variant/5" id="log-grid">
+</div>
+</div>
+<div class="flex flex-col items-center gap-8">
+<button class="px-16 py-6 border border-primary text-primary font-label tracking-[8px] uppercase text-sm hover:bg-primary hover:text-surface transition-all active:scale-95 group relative overflow-hidden" onclick="openModal()">
+<span class="relative z-10" id="cta-text">Adquirir agora</span>
+</button>
+<p class="font-body text-xs uppercase tracking-[4px] opacity-40 italic" id="protocol-text">Protocolo de posse física intransigente.</p>
+</div>
+</main>
+<footer class="w-full py-16 px-8 flex flex-col items-center gap-10 bg-surface border-t border-outline-variant/20 relative z-40">
+<a class="font-label text-[11px] tracking-[6px] uppercase text-primary border-b border-primary/30 pb-1 hover:text-white transition-colors" href="https://a.co/d/06PrjFYu" id="footer-amazon-link" target="_blank">
+            AMAZON_OFFICIAL_EDITION
+        </a>
+<div class="flex flex-col items-center gap-2 opacity-30 text-center">
+<div class="font-bold font-label text-[10px] tracking-[4px]">
+                © MMXXIV ARTEFATO #001/001
+            </div>
+<div class="font-mono text-[9px] tracking-widest uppercase">
+                THE SOVEREIGN ARCHIVE. ALL RIGHTS RESERVED.
+            </div>
+</div>
+</footer>
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-surface/98 backdrop-blur-xl px-4 hidden" id="acquisition-modal">
+<div class="w-full max-w-2xl border border-outline-variant/50 bg-[#0a0908] p-10 md:p-16 relative shadow-[0_0_100px_rgba(196,145,62,0.1)]">
+<button class="absolute top-6 right-6 text-outline-variant hover:text-primary transition-colors" onclick="closeModal()">
+<span class="material-symbols-outlined text-3xl">close</span>
+</button>
+<div class="mb-10 border-b border-outline-variant/30 pb-8 text-center">
+<h2 class="font-headline text-2xl tracking-[10px] uppercase text-primary mb-4" id="modal-title">Protocolo de Aquisição</h2>
+<p class="font-mono text-[10px] opacity-50 uppercase tracking-[4px]" id="modal-txn-id">ASSET_ID: #001_GENESIS_SOVEREIGN</p>
+</div>
+<div class="space-y-10">
+<div class="text-center">
+<label class="font-label text-[10px] tracking-[5px] uppercase block mb-3 opacity-40" id="modal-price-label">Current Valuation</label>
+<div class="font-headline text-5xl md:text-6xl text-primary" id="modal-price-value">R$ 0,00</div>
+</div>
+<div class="p-6 border border-primary/20 bg-primary/5 font-body text-lg italic opacity-90 leading-relaxed text-center" id="modal-instruction-text">
+                    Após o pagamento, envie o comprovante e seu endereço de entrega para <strong>ricardodbrito@gmail.com</strong>.
+                </div>
+<div class="bg-surface border border-outline-variant/30 p-8 space-y-4">
+<label class="font-label text-[10px] tracking-[4px] uppercase block opacity-40 text-center" id="modal-payment-label">Chave de Pagamento (PIX)</label>
+<div class="flex flex-col md:flex-row gap-4 items-center justify-center">
+<code class="font-mono text-base md:text-lg text-primary select-all bg-outline-variant/10 px-4 py-2 border border-outline-variant/20">ricardodbrito@gmail.com</code>
+<button class="flex items-center gap-2 font-label text-[10px] tracking-[2px] uppercase bg-primary text-surface px-4 py-2 hover:brightness-110 transition-all" onclick="copyPix()">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+<span id="copy-btn-text">COPIAR</span>
+</button>
+</div>
+</div>
+<div class="text-center pt-4">
+<p class="font-mono text-[9px] opacity-40 uppercase tracking-[3px]" id="modal-footer-note">Possessão física garantida via protocolo seguro.</p>
+</div>
+</div>
+</div>
+</div>
+<script>
+        let currentLang = 'pt';
+        
+        // Configuration
+        const startDate = new Date(2023, 9, 18); // 18 Oct 2023
+        const startPrice = 1000;
+        const dailyIncrease = 50;
+        const exchangeRate = 5.60;
+
+        function calculateCurrentPrice() {
+            const now = new Date();
+            const diffTime = now - startDate;
+            const diffDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+            return startPrice + (diffDays * dailyIncrease);
+        }
+
+        function updateOnlineCounter() {
+            const base = 1200;
+            const variance = Math.floor(Math.random() * 200);
+            document.getElementById('online-counter').innerText = `~${(base + variance).toLocaleString()} ONLINE NOW`;
+        }
+
+        function toggleManifesto() {
+            const content = document.getElementById('manifesto-accordion');
+            const chevron = document.getElementById('manifesto-chevron');
+            const isOpen = content.classList.contains('open');
+            
+            if (isOpen) {
+                content.classList.remove('open');
+                chevron.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('open');
+                chevron.style.transform = 'rotate(180deg)';
+                // Scroll slightly to content if needed
+            }
+        }
+
+        function updateUI() {
+            const price = calculateCurrentPrice();
+            const usdPrice = price / exchangeRate;
+            
+            const formattedBRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+            const formattedUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(usdPrice);
+
+            document.getElementById('brl-price-display').innerText = formattedBRL;
+            document.getElementById('usd-price-display').innerText = formattedUSD;
+            document.getElementById('modal-price-value').innerText = currentLang === 'pt' ? formattedBRL : formattedUSD;
+
+            const displayDate = startDate.toLocaleDateString(currentLang === 'pt' ? 'pt-BR' : 'en-US', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase().replace(/ DE /g, '_').replace(/ /g, '_');
+            document.getElementById('log-start-date-label').innerText = `START_DATE: ${displayDate}`;
+
+            const urgencyNotice = document.getElementById('urgency-notice').querySelector('p');
+
+            if (currentLang === 'en') {
+                document.getElementById('site-title').innerText = "THE GENESIS COPY";
+                document.getElementById('hero-title').innerHTML = `The World's Most Expensive <span class="text-primary italic">Asset</span>`;
+                document.getElementById('hero-quote').innerText = `"Someone else is reading this right now."`;
+                document.getElementById('status-text').innerText = "Not yet acquired";
+                document.getElementById('cta-text').innerText = "Acquire now";
+                document.getElementById('increase-text').innerText = `↑ $ ${(50/exchangeRate).toFixed(2)} TOMORROW`;
+                document.getElementById('log-title').innerText = "EXPERIMENT LOG";
+                document.getElementById('protocol-text').innerText = "Uncompromising physical possession protocol.";
+                document.getElementById('modal-title').innerText = "Acquisition Protocol";
+                document.getElementById('modal-instruction-text').innerHTML = "After payment, send the receipt and your shipping address to <strong>ricardodbrito@gmail.com</strong>.";
+                document.getElementById('modal-payment-label').innerText = "Payment Key (PIX)";
+                document.getElementById('modal-price-label').innerText = "Current Valuation";
+                document.getElementById('copy-btn-text').innerText = "COPY";
+                document.getElementById('primary-currency-label').innerText = "Converted (BRL)";
+                document.getElementById('secondary-currency-label').innerText = "Valuation (USD)";
+                document.getElementById('manifesto-title').innerText = "MANIFESTO OF POSSESSION";
+                document.getElementById('click-to-understand').innerText = "(click to understand)";
+                
+                urgencyNotice.innerText = "\"When you close this page and return tomorrow, the price will already be different.\"";
+
+                document.getElementById('manifesto-content').innerHTML = `
+                    <p>You are not buying a book.</p>
+                    <p>Books are replicable. Knowledge is public. The commercial edition is available on Amazon for a fixed price and will stay there.</p>
+                    <p class="text-primary">What exists here is different.</p>
+                    <p>This is the <span class="italic">Genesis Copy</span> — the only physical, hardbound copy that came directly from the author’s hands before any print run. It carries the certification autograph and an exclusive handwritten note in the margins of the first chapter: a reflection that collapsed during writing and never made it into the final edition.</p>
+                    <p>Ricardo Brito publicly signs an irrevocable commitment: he will never sign another copy of "The Most Expensive Asset in the World". No event, no launch, no future edition will receive his signature. This is the only autograph that will ever exist for this title — forever.</p>
+                    <p>The price rises by <span class="text-secondary font-mono">$ ${(50/exchangeRate).toFixed(2)}</span> every day because hesitation has a real cost. It is not a metaphor — it is the mechanics of the experiment. Each day that passes without a buyer is data about our relationship with time.</p>
+                    <p class="pt-8 border-t border-outline-variant/20 italic text-2xl">The final holder of this copy will not just own a book. They will be the holder of the only object the author touched, signed, and promised never to replicate.</p>
+                `;
+            } else {
+                document.getElementById('site-title').innerText = "A CÓPIA GÊNESIS";
+                document.getElementById('hero-title').innerHTML = `O <span class="text-primary italic">Ativo</span> Mais Caro do Mundo`;
+                document.getElementById('hero-quote').innerText = `"Alguém mais está lendo isso agora."`;
+                document.getElementById('status-text').innerText = "Ainda não adquirido";
+                document.getElementById('cta-text').innerText = "Adquirir agora";
+                document.getElementById('increase-text').innerText = "↑ R$ 50 AMANHÃ";
+                document.getElementById('log-title').innerText = "LOG DO EXPERIMENTO";
+                document.getElementById('protocol-text').innerText = "Protocolo de posse física intransigente.";
+                document.getElementById('modal-title').innerText = "Protocolo de Aquisição";
+                document.getElementById('modal-instruction-text').innerHTML = "Após o pagamento, envie o comprovante e seu endereço de entrega para <strong>ricardodbrito@gmail.com</strong>.";
+                document.getElementById('modal-payment-label').innerText = "Chave de Pagamento (PIX)";
+                document.getElementById('modal-price-label').innerText = "Valuation Atual";
+                document.getElementById('copy-btn-text').innerText = "COPIAR";
+                document.getElementById('primary-currency-label').innerText = "Valuation (BRL)";
+                document.getElementById('secondary-currency-label').innerText = "Converted (USD)";
+                document.getElementById('manifesto-title').innerText = "MANIFESTO DE POSSE";
+                document.getElementById('click-to-understand').innerText = "(clique para entender)";
+
+                urgencyNotice.innerText = "\"Quando você fechar esta página, quando voltar amanhã o preço já será outro.\"";
+
+                document.getElementById('manifesto-content').innerHTML = `
+                    <p>Você não está comprando um livro.</p>
+                    <p>Livros são replicáveis. Conhecimento é público. A edição comercial está disponível na Amazon por um preço fixo e vai continuar lá.</p>
+                    <p class="text-primary">O que existe aqui é diferente.</p>
+                    <p>Esta é a <span class="italic">Cópia Gênesis</span> — o único exemplar físico, em capa dura, que saiu diretamente das mãos do autor antes de qualquer tiragem. Ela carrega o autógrafo de certificação e uma anotação manuscrita exclusiva nas margens do primeiro capítulo: uma reflexão que colapsou durante a escrita e nunca entrou na edição final.</p>
+                    <p>Ricardo Brito assina publicamente um compromisso irrevogável: jamais autografará outro exemplar de "O Ativo Mais Caro do Mundo". Nenhum evento, nenhum lançamento, nenhuma edição futura receberá sua assinatura. Este é o único autógrafo que existirá sobre este título — para sempre.</p>
+                    <p>O preço sobe <span class="text-secondary font-mono">R$ 50</span> todo dia porque hesitação tem custo real. Não é uma metáfora — é a mecânica do experimento. Cada dia que passa sem um comprador é um dado sobre a nossa relação com o tempo.</p>
+                    <p class="pt-8 border-t border-outline-variant/20 italic text-2xl">O portador final desta cópia não será apenas o dono de um livro. Será o detentor do único objeto que o autor tocou, assinou e prometeu nunca mais replicar.</p>
+                `;
+            }
+
+            renderLog();
+        }
+
+        function renderLog() {
+            const grid = document.getElementById('log-grid');
+            grid.innerHTML = '';
+            
+            const days = [-3, -2, -1, 0, 1, 2, 3];
+            const now = new Date();
+
+            days.forEach((offset, idx) => {
+                const date = new Date(now);
+                date.setDate(now.getDate() + offset);
+                
+                const diffDays = Math.floor((date - startDate) / (1000 * 60 * 60 * 24));
+                const dayPrice = Math.max(startPrice, startPrice + (diffDays * dailyIncrease));
+                const isToday = offset === 0;
+                const isPast = offset < 0;
+                
+                const cell = document.createElement('div');
+                cell.className = `p-6 border-r border-b border-outline-variant/30 ${isPast ?
